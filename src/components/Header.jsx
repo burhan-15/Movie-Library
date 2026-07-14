@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { useWishlist } from '../context/WishlistContext';
+import CinePulseLogo from './CinePulseLogo';
 
 function Header({ theme, toggleTheme }) {
   const { wishlist } = useWishlist();
@@ -8,7 +9,7 @@ function Header({ theme, toggleTheme }) {
   return (
     <header className="app-header">
       <Link to="/" className="brand" style={{ textDecoration: 'none' }}>
-        <span className="brand-icon">🎬</span>
+        <CinePulseLogo width={36} height={36} className="brand-icon-svg" />
         <h1 className="brand-name">CinePulse</h1>
       </Link>
 

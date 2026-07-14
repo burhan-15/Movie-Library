@@ -162,6 +162,18 @@ body {
   filter: drop-shadow(0 0 8px rgba(236, 72, 153, 0.4));
 }
 
+.brand-icon-svg {
+  display: inline-block;
+  vertical-align: middle;
+  filter: drop-shadow(0 0 8px rgba(236, 72, 153, 0.4));
+  animation: pulse-glow 3s infinite ease-in-out;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.brand:hover .brand-icon-svg {
+  transform: scale(1.1) rotate(8deg);
+}
+
 .brand-name {
   font-size: 1.8rem;
   font-weight: 800;
