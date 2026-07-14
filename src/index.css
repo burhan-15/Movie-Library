@@ -743,6 +743,7 @@ body {
   border: 1px solid rgba(168, 85, 247, 0.25);
   width: 100%;
   max-width: 900px;
+  max-height: 90vh;
   border-radius: 24px;
   overflow: hidden;
   position: relative;
@@ -751,6 +752,36 @@ body {
     0 0 100px rgba(236, 72, 153, 0.05);
   animation: slide-up 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   transition: background-color 0.4s ease, border-color 0.4s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-scrollable-container {
+  overflow-y: auto;
+  flex-grow: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Custom scrollbar for modal scrollable container */
+.modal-scrollable-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-scrollable-container::-webkit-scrollbar-track {
+  background: var(--modal-bg);
+}
+
+.modal-scrollable-container::-webkit-scrollbar-thumb {
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+  border: 2px solid var(--modal-bg);
+}
+
+.modal-scrollable-container::-webkit-scrollbar-thumb:hover {
+  background: var(--color-pink);
 }
 
 .modal-close-btn {
@@ -1112,6 +1143,133 @@ body {
     margin-left: 0;
     width: 100%;
     justify-content: center;
+  }
+
+  /* Disable hover state overlay on touch/mobile devices */
+  .movie-overlay {
+    display: none !important;
+  }
+
+  /* Responsive Modal Layout Adjustments for tablets/mobile */
+  .modal-overlay {
+    padding: 0.75rem;
+  }
+
+  .modal-content {
+    max-height: 95vh;
+    border-radius: 20px;
+  }
+
+  .modal-backdrop-img {
+    height: 200px;
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+    margin-top: -100px;
+    gap: 1.5rem;
+  }
+
+  .modal-poster {
+    width: 140px;
+    height: 210px;
+    border-radius: 12px;
+  }
+
+  .modal-title {
+    font-size: 1.8rem;
+  }
+
+  .modal-rating-container {
+    margin-bottom: 1.25rem;
+  }
+
+  .modal-overview-section h3 {
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .modal-overview-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+}
+
+/* Specific viewports for mobile phones (max-width: 576px) */
+@media (max-width: 576px) {
+  .movie-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .movie-card {
+    border-radius: 12px;
+  }
+
+  .movie-title {
+    font-size: 0.95rem;
+  }
+
+  .movie-year {
+    font-size: 0.8rem;
+  }
+
+  .movie-info {
+    padding: 0.85rem;
+    gap: 0.2rem;
+  }
+
+  .rating-badge {
+    top: 0.5rem;
+    right: 0.5rem;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .wishlist-card-btn {
+    top: 0.5rem;
+    left: 0.5rem;
+    width: 32px;
+    height: 32px;
+    font-size: 0.85rem;
+  }
+
+  /* Fit modal nicely on very small screens */
+  .modal-overlay {
+    padding: 0.5rem;
+  }
+
+  .modal-content {
+    max-height: 96vh;
+    border-radius: 16px;
+  }
+
+  .modal-backdrop-img {
+    height: 160px;
+  }
+
+  .modal-body {
+    padding: 1.25rem;
+    margin-top: -80px;
+    gap: 1.25rem;
+  }
+
+  .modal-poster {
+    width: 120px;
+    height: 180px;
+  }
+
+  .modal-title {
+    font-size: 1.5rem;
+  }
+
+  .modal-metadata {
+    gap: 0.75rem 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .metadata-item {
+    font-size: 0.85rem;
   }
 }
 

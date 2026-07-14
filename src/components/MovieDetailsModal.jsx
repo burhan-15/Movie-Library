@@ -61,61 +61,63 @@ function MovieDetailsModal({ movie, onClose }) {
           &times;
         </button>
 
-        {backdropUrl && (
-          <div 
-            className="modal-backdrop-img" 
-            style={{ backgroundImage: `url(${backdropUrl})` }}
-          />
-        )}
+        <div className="modal-scrollable-container">
+          {backdropUrl && (
+            <div 
+              className="modal-backdrop-img" 
+              style={{ backgroundImage: `url(${backdropUrl})` }}
+            />
+          )}
 
-        <div className="modal-body">
-          <div className="modal-poster">
-            {posterUrl ? (
-              <img src={posterUrl} alt={`${title} Poster`} />
-            ) : (
-              <div className="modal-poster-placeholder">🎬</div>
-            )}
-          </div>
-
-          <div className="modal-info">
-            <h2 className="modal-title">{title}</h2>
-            
-            {movie.title !== movie.original_title && (
-              <h4 className="modal-original-title">Original Title: {movie.original_title}</h4>
-            )}
-
-            <div className="modal-metadata">
-              <span className="metadata-item">
-                <strong>Release Date:</strong> {formattedDate}
-              </span>
-              <span className="metadata-item">
-                <strong>Language:</strong> {original_language?.toUpperCase() || 'N/A'}
-              </span>
-              <span className="metadata-item">
-                <strong>Popularity:</strong> {popularity?.toFixed(0) || 'N/A'}
-              </span>
+          <div className="modal-body">
+            <div className="modal-poster">
+              {posterUrl ? (
+                <img src={posterUrl} alt={`${title} Poster`} />
+              ) : (
+                <div className="modal-poster-placeholder">🎬</div>
+              )}
             </div>
 
-            <div className="modal-rating-container">
-              <div className="modal-stars-wrapper">
-                <span className="modal-rating-score">{rating}</span>
-                <span className="modal-rating-max">/10</span>
-              </div>
-              <span className="modal-vote-count">({vote_count || 0} votes)</span>
+            <div className="modal-info">
+              <h2 className="modal-title">{title}</h2>
               
-              {/* Wishlist Button in Modal */}
-              <button 
-                className={`modal-wishlist-btn ${wishlisted ? 'active' : ''}`}
-                onClick={() => toggleWishlist(movie)}
-                title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
-              >
-                {wishlisted ? '💖 Wishlisted' : '🤍 Wishlist'}
-              </button>
-            </div>
+              {movie.title !== movie.original_title && (
+                <h4 className="modal-original-title">Original Title: {movie.original_title}</h4>
+              )}
 
-            <div className="modal-overview-section">
-              <h3>Overview</h3>
-              <p className="modal-overview-text">{overview || 'No overview available for this movie.'}</p>
+              <div className="modal-metadata">
+                <span className="metadata-item">
+                  <strong>Release Date:</strong> {formattedDate}
+                </span>
+                <span className="metadata-item">
+                  <strong>Language:</strong> {original_language?.toUpperCase() || 'N/A'}
+                </span>
+                <span className="metadata-item">
+                  <strong>Popularity:</strong> {popularity?.toFixed(0) || 'N/A'}
+                </span>
+              </div>
+
+              <div className="modal-rating-container">
+                <div className="modal-stars-wrapper">
+                  <span className="modal-rating-score">{rating}</span>
+                  <span className="modal-rating-max">/10</span>
+                </div>
+                <span className="modal-vote-count">({vote_count || 0} votes)</span>
+                
+                {/* Wishlist Button in Modal */}
+                <button 
+                  className={`modal-wishlist-btn ${wishlisted ? 'active' : ''}`}
+                  onClick={() => toggleWishlist(movie)}
+                  title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+                >
+                  {wishlisted ? '💖 Wishlisted' : '🤍 Wishlist'}
+                </button>
+              </div>
+
+              <div className="modal-overview-section">
+                <h3>Overview</h3>
+                <p className="modal-overview-text">{overview || 'No overview available for this movie.'}</p>
+              </div>
             </div>
           </div>
         </div>
