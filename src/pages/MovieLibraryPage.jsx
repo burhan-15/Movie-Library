@@ -8,29 +8,33 @@ function MovieLibraryPage({ onMovieClick }) {
   const [error, setError] = useState(null);
   const [feedType, setFeedType] = useState('trending'); // 'trending' or 'popular'
   const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  // Debounced movie loading trigger (fires when searchQuery or feedType changes)
+  // Debounced movie loading trigger (fires when searchQuery, feedType, or page changes)
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      loadMovies();
-    }, 450);
+      loadMovies(page);
+    }, searchQuery.trim() ? 450 : 0);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery, feedType]);
+  }, [searchQuery, feedType, page]);
 
-  const loadMovies = async () => {
+  const loadMovies = async (targetPage = page) => {
     setLoading(true);
     setError(null);
     try {
       let data;
       if (searchQuery.trim()) {
-        data = await searchMovies(searchQuery);
+        data = await searchMovies(searchQuery, targetPage);
       } else if (feedType === 'trending') {
-        data = await fetchTrendingMovies();
+        data = await fetchTrendingMovies(targetPage);
       } else {
-        data = await fetchPopularMovies();
+        data = await fetchPopularMovies(targetPage);
       }
       setMovies(data.results || []);
+      setTotalPages(data.total_pages || 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       console.error('Failed to load movies:', err);
       setError('Failed to fetch movies from the library API. Please verify your token and network connection.');
@@ -41,6 +45,36 @@ function MovieLibraryPage({ onMovieClick }) {
 
   const handleClearSearch = () => {
     setSearchQuery('');
+    setPage(1);
+  };
+
+  const getPageNumbers = () => {
+    const pageLimit = Math.min(totalPages, 500);
+    const pages = [];
+    const range = 1; // number of pages to show before and after current page
+
+    pages.push(1);
+
+    let start = Math.max(2, page - range);
+    let end = Math.min(pageLimit - 1, page + range);
+
+    if (start > 2) {
+      pages.push('ellipsis-start');
+    }
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    if (end < pageLimit - 1) {
+      pages.push('ellipsis-end');
+    }
+
+    if (pageLimit > 1) {
+      pages.push(pageLimit);
+    }
+
+    return pages;
   };
 
   return (
@@ -55,7 +89,10 @@ function MovieLibraryPage({ onMovieClick }) {
               className="search-input"
               placeholder="Search movies (e.g. Jack Reacher...)"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setPage(1);
+              }}
             />
             {searchQuery && (
               <button className="clear-search-btn" onClick={handleClearSearch} title="Clear search">
@@ -69,13 +106,19 @@ function MovieLibraryPage({ onMovieClick }) {
           <div className="category-selectors">
             <button
               className={`category-btn ${feedType === 'trending' ? 'active' : ''}`}
-              onClick={() => setFeedType('trending')}
+              onClick={() => {
+                setFeedType('trending');
+                setPage(1);
+              }}
             >
               🔥 Trending
             </button>
             <button
               className={`category-btn ${feedType === 'popular' ? 'active' : ''}`}
-              onClick={() => setFeedType('popular')}
+              onClick={() => {
+                setFeedType('popular');
+                setPage(1);
+              }}
             >
               ⭐ Popular
             </button>
@@ -104,7 +147,7 @@ function MovieLibraryPage({ onMovieClick }) {
           <span>⚠️</span>
           <h2>Failed to Load</h2>
           <p>{error}</p>
-          <button className="retry-btn" onClick={loadMovies}>
+          <button className="retry-btn" onClick={() => loadMovies(page)}>
             Retry Connection
           </button>
         </div>
@@ -112,15 +155,61 @@ function MovieLibraryPage({ onMovieClick }) {
 
       {/* Movie Grid */}
       {!loading && !error && movies.length > 0 && (
-        <div className="movie-grid animate-fade-in">
-          {movies.map((movie) => (
-            <MovieCard
-              key={movie.id}
-              movie={movie}
-              onClick={() => onMovieClick(movie)}
-            />
-          ))}
-        </div>
+        <>
+          <div className="movie-grid animate-fade-in">
+            {movies.map((movie) => (
+              <MovieCard
+                key={movie.id}
+                movie={movie}
+                onClick={() => onMovieClick(movie)}
+              />
+            ))}
+          </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="pagination-container">
+              <button
+                className="pagination-btn arrow-btn"
+                disabled={page === 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                aria-label="Previous Page"
+              >
+                ← Prev
+              </button>
+
+              <div className="pagination-pages">
+                {getPageNumbers().map((pageNum, index) => {
+                  if (pageNum === 'ellipsis-start' || pageNum === 'ellipsis-end') {
+                    return (
+                      <span key={`ellipsis-${index}`} className="pagination-ellipsis">
+                        ...
+                      </span>
+                    );
+                  }
+                  return (
+                    <button
+                      key={pageNum}
+                      className={`pagination-btn page-num ${page === pageNum ? 'active' : ''}`}
+                      onClick={() => setPage(pageNum)}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                className="pagination-btn arrow-btn"
+                disabled={page === Math.min(totalPages, 500)}
+                onClick={() => setPage((p) => Math.min(Math.min(totalPages, 500), p + 1))}
+                aria-label="Next Page"
+              >
+                Next →
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       {/* Empty State */}
